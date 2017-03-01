@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+source /usr/local/sge/default/common/settings.sh
+TEST=`ps aux | grep sge_qmaster | grep sgeadmin`
+
+if [ -z "$TEST" ]
+then
+echo "CRITICAL: sge_qmaster is not running"
+fi
+
+if [ -n "$TEST" ]
+then
+echo "OK: sge_qmaster is running"
+fi
+

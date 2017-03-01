@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+source /usr/local/sge/default/common/settings.sh
+WARNING=$1
+CRITICAL=$2
+
+ALL=`qstat -u \* | wc -l`
+RUNNING=`qstat -u \* -s r | wc -l`
+PENDING=`echo " $ALL - $RUNNING " | bc`
+
+if [ $PENDING -lt $WARNING ]
+then
+echo "OK : $PENDING jobs pending"
+fi
+
+if [ $PENDING -ge $WARNING ] && [ $PENDING -lt $CRITICAL ]
+then
+echo "WARNING: $PENDING jobs pending"
+fi
+
+if [ $PENDING -ge $CRITICAL ]
+then
+echo "CRITICAL: $PENDING jobs pending"
+fi
+

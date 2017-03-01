@@ -1,0 +1,22 @@
+#!/bin/bash
+
+
+hostname=`hostname`
+if [ $# -ne 1 ]; then
+	echo "${hostname}_`basename $0` WARNING - Usage:\t$0\t<OS_service_to_check_status>"
+	exit 1;
+fi
+service=$1
+
+
+a=`/usr/bin/systemctl status $service 2>/dev/null | grep "active (running)"`
+
+if [ -n "$a" ]; then
+	echo "${hostname}_${service} OK - ${service} is running on the system"
+	exit 0;
+fi
+
+echo "${hostname}_${service} CRITICAL - ${service} is NOT running on the system"
+exit 2
+
+
