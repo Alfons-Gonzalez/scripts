@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+export PATH=/usr/local/slurm/bin:$PATH
+NODES="gimli balin thorin dwalin bifur"
+# Fitxer de control: el creem i ens assegurem que esta buit
+if [ ! /tmp/nodes.txt ]
+then
+        touch /tmp/nodes.txt
+fi
+cat /dev/null > /tmp/nodes.txt
+# control de l'estat
+for maquina in $NODES
+do
+	STATE=`scontrol show node $maquina | grep State | awk {'print $1'} | cut -d '=' -f 2`
+	echo " $maquina $STATE " >> /tmp/nodes.txt
+done
+
+RESULT=`cat /tmp/nodes.txt | grep -v IDLE | grep -v MIX`
+ESTAT=`cat /tmp/nodes.txt`
+
+if [ -z "$RESULT" ]
+then 
+	echo "OK $ESTAT"
+fi
+if [ -n "$RESULT" ]
+then
+	echo "WARNING: $RESULT"
+fi
+
+
