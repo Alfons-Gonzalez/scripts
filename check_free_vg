@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# check l'espai lliure del VG
+#
+TOTALVG=`vgdisplay | grep Total | awk {'print $3'}`
+FREEVG=`vgdisplay | grep Free | awk {'print $5'}`
+
+RATIO="0`echo "$FREEVG/$TOTALVG" | bc -l | cut -c 1,2`"
+
+PERCENT=`echo $RATIO*100|bc | cut -f 1 -d '.' `
+LIMITW=20
+LIMITC=10
+
+if [ $PERCENT -gt $LIMITW ] 
+then
+	echo "OK : snow_vg has $PERCENT% free space"
+	exit 0
+fi
+if [ $PERCENT -gt $LIMITC ] && [ $PERCENT -le $LIMITW ] 
+then
+	echo "WARNING: less than 20% free space in snow_vg"
+	exit 1
+fi
+if [ $PERCENT -lt $LIMITC ]
+then
+	echo "CRITICAL: less than 10% free space in snow_vg"
+	exit 2
+fi
+

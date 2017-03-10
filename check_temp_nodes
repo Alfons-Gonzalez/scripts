@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+llista="mr-00-01.x.upf.edu mr-00-02.x.upf.edu mr-00-03.x.upf.edu mr-00-04.x.upf.edu mr-00-05.x.upf.edu mr-00-06.x.upf.edu mr-00-07.x.upf.edu mr-00-08.x.upf.edu mr-00-09.x.upf.edu mr-00-10.x.upf.edu mr-00-11.x.upf.edu mr-00-12.x.upf.edu"
+
+control=/tmp/control-nodes.temp
+if [ -f "$control" ]
+then 
+	rm -f $control
+fi
+
+warning=35
+
+for node in $llista
+do temperatura=`ipmitool -I lanplus -H $node -U admin -P @Cr3ditar1Lim@. sdr type Temperature | grep Inlet | awk {'print $10'} `
+	if [ $temperatura -lt $warning ]
+	then
+		echo "$node $temperatura" >> $control
+	fi
+	if [ $temperatura -ge $warning ]
+	then
+		echo "Warning $node $temperatura" >> $control
+	fi
+done
+alerta=`grep Warning $control`
+
+if [ -z "$alerta" ]
+then
+	echo "OK : cap node amb temperatura superior a $warning"
+	exit 0
+fi
+
+if [ -n "$alerta" ]
+then
+	echo "WARNING: $alerta"
+	exit 1
+fi
+
+
