@@ -23,7 +23,7 @@ then
         echo "$ESTAT_FINAL"
         exit 0
 fi
-if [ -n "$RESULT" ]
+if [ -n "$DOLENT" ]
 then
         echo "CRITICAL: $ESTAT_FINAL"
         exit 2
