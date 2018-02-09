@@ -47,7 +47,9 @@ ssh $NIS_SERVER "useradd -u $USER_ID -g $GROUP_ID $USER_NAME; cd /var/yp; make"
 echo "creant el directori de l'usuari a les workstations de grup"
 ansible $LAB -m file -a "path=/home/$USER_NAME state=directory owner=$USER_NAME group=$GROUP_ID"
 ansible $LAB -m copy -a "src=/etc/skel/.bashrc dest=/home/$USER_NAME/.bashrc"
+ansible $LAB -m file -a "path=/home/$USER_NAME/.bashrc state=file owner=$USER_NAME group=$GROUP_ID"
 ansible $LAB -m copy -a "src=/etc/skel/.bash_profile dest=/home/$USER_NAME/.bash_profile"
+ansible $LAB -m file -a "path=/home/$USER_NAME/.bash_profile state=file owner=$USER_NAME group=$GROUP_ID"
 
 # passes seguents:
 # 3.- crear directori i usuari sense shell als servidors nfs del lab
